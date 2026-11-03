@@ -276,6 +276,13 @@
           <span id="nav-saved-exams-count" class="px-1.5 py-0.2 rounded-full bg-indigo-600 text-white text-[10px]">0</span>
         </button>
 
+        <!-- Bảng Xếp Hạng Button -->
+        <button id="btn-nav-leaderboard" onclick="openCurrentExamLeaderboard()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs border border-amber-200 shadow-sm transition-all active:scale-95" title="Bảng xếp hạng riêng của đề thi đang mở">
+          <span class="text-sm">🏆</span>
+          <span class="hidden sm:inline">Bảng Xếp Hạng</span>
+          <span id="nav-leaderboard-count" class="px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px]">0</span>
+        </button>
+
         <!-- Mode Switcher Pill -->
         <div id="mode-switcher-container" class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200">
           <button id="btn-mode-teacher" onclick="switchMode('teacher')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-brand-700 shadow-sm">
@@ -741,6 +748,13 @@
         <button onclick="startStudentExam()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-extrabold text-base shadow-lg shadow-brand-600/30 active:scale-95 transition-all">
           Bắt Đầu Làm Bài Ngay
         </button>
+
+        <div class="flex items-center justify-center pt-1">
+          <button type="button" onclick="openCurrentExamLeaderboard()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs border border-amber-200 transition-all active:scale-95">
+            <span>🏆</span>
+            <span>Xem Bảng Xếp Hạng Đề Này</span>
+          </button>
+        </div>
       </div>
 
       <!-- MAIN EXAM TAKING INTERFACE (Active Exam) -->
@@ -897,6 +911,11 @@
 
             <!-- Action buttons -->
             <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
+              <button onclick="openCurrentExamLeaderboard()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs shadow-md shadow-amber-500/25 transition-all active:scale-95">
+                <span class="text-sm">🏆</span>
+                <span>Xem Bảng Xếp Hạng Đề Này</span>
+              </button>
+
               <button onclick="window.print()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-all shadow-sm">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -1181,6 +1200,109 @@
     <div class="relative max-w-4xl max-h-[90vh]">
       <img id="lightbox-img" class="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl bg-white p-2">
       <p class="text-center text-xs text-white/70 mt-2">Bấm bất kỳ đâu để đóng</p>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: BẢNG XẾP HẠNG RIÊNG CHO MỖI ĐỀ THI (LEADERBOARD)                  -->
+  <!-- ========================================================================= -->
+  <div id="modal-exam-leaderboard" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-gradient-to-r from-amber-50 via-white to-orange-50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center text-xl shadow-md shadow-amber-500/25 shrink-0">
+            🏆
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">Bảng Xếp Hạng Đề Thi</h3>
+              <span id="lb-badge-total" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                0 lượt thi
+              </span>
+            </div>
+            <p id="lb-exam-title-display" class="text-xs text-slate-600 font-medium truncate max-w-md sm:max-w-xl">
+              Đề thi THPT 2025
+            </p>
+          </div>
+        </div>
+
+        <button onclick="closeLeaderboardModal()" class="w-9 h-9 rounded-full hover:bg-slate-200/60 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 sm:p-5 bg-slate-50/70 border-b border-slate-200">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 block">🥇 Thủ Khoa</span>
+          <div id="lb-stat-top-score" class="text-base sm:text-lg font-black text-slate-900 mt-0.5">--</div>
+          <div id="lb-stat-top-student" class="text-[11px] text-slate-500 truncate">Chưa có dữ liệu</div>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 block">📊 Điểm Trung Bình</span>
+          <div id="lb-stat-avg-score" class="text-base sm:text-lg font-black text-slate-900 mt-0.5">--</div>
+          <div class="text-[11px] text-slate-500">Trên thang điểm 10.0</div>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block">⚡ Nhanh Nhất</span>
+          <div id="lb-stat-fastest-time" class="text-base sm:text-lg font-black text-slate-900 mt-0.5">--</div>
+          <div class="text-[11px] text-slate-500">Thời gian làm bài</div>
+        </div>
+
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600 block">👥 Tổng Thí Sinh</span>
+          <div id="lb-stat-total-submissions" class="text-base sm:text-lg font-black text-slate-900 mt-0.5">0</div>
+          <div class="text-[11px] text-slate-500">Lượt nộp đã chấm</div>
+        </div>
+      </div>
+
+      <!-- Filter & Action Toolbar -->
+      <div class="p-3 sm:px-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-white">
+        <!-- Search input -->
+        <div class="relative flex-1 min-w-[200px] max-w-sm">
+          <input type="text" id="lb-search-input" oninput="filterLeaderboardUI()" placeholder="Tìm thí sinh theo Họ tên, SBD, Lớp..." class="w-full text-xs px-3.5 py-2 pl-9 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 focus:bg-white transition-all">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="exportLeaderboardToCSV()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all active:scale-95">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Xuất Excel/CSV</span>
+          </button>
+
+          <button id="btn-lb-clear-all" onclick="clearCurrentExamLeaderboard()" class="hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs transition-all active:scale-95">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Xóa Lịch Sử</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Leaderboard Table Container -->
+      <div id="lb-table-container" class="flex-1 overflow-y-auto p-4 sm:p-5 custom-scrollbar bg-slate-50/50">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Footer -->
+      <div class="p-3 sm:px-5 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 bg-white">
+        <span id="lb-footer-info" class="text-[11px] sm:text-xs">Tiêu chuẩn: Điểm cao nhất ➔ Thời gian nhanh nhất ➔ Ít chuyển tab nhất</span>
+        <button onclick="closeLeaderboardModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors">
+          Đóng
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -1809,6 +1931,9 @@
 
       // 8. Initialize Ambient Background & Lofi Controls
       initAmbienceOnLoad();
+
+      // 9. Update Exam Leaderboard Badge
+      updateLeaderboardBadge();
     });
 
     /**
@@ -3260,9 +3385,51 @@ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON với cấu trúc:
       clearInterval(AppState.student.timerInterval);
       AppState.student.submitted = true;
 
+      // Ensure exam has an id
+      if (!AppState.exam.id) {
+        AppState.exam.id = 'exam_' + (AppState.exam.title ? slugify(AppState.exam.title) : Date.now());
+      }
+
       // Calculate Scores
       const scoreData = calculateOfficialScores();
       AppState.student.scoreResult = scoreData;
+
+      // Calculate Time Spent
+      const durationMinutes = AppState.exam.duration || 50;
+      const durationSeconds = durationMinutes * 60;
+      const timeSpent = Math.max(1, durationSeconds - (AppState.student.remainingSeconds || 0));
+
+      // Record to Exam-specific Leaderboard
+      const submissionEntry = {
+        id: 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        examId: AppState.exam.id,
+        examTitle: AppState.exam.title || 'Đề thi THPT 2025',
+        studentName: AppState.student.name || 'Thí sinh',
+        studentSbd: AppState.student.sbd || 'N/A',
+        studentClass: AppState.student.className || '',
+        username: AppState.currentUser?.username || '',
+        score: scoreData.totalScore,
+        part1Score: scoreData.part1Score,
+        part2Score: scoreData.part2Score,
+        part3Score: scoreData.part3Score,
+        part1Correct: `${scoreData.part1CorrectCount}/${AppState.exam.parts.part_1?.length || 0}`,
+        part2Correct: `${scoreData.part2CorrectItems}/${(AppState.exam.parts.part_2?.length || 0) * 4}`,
+        part3Correct: `${scoreData.part3CorrectCount}/${AppState.exam.parts.part_3?.length || 0}`,
+        timeSpentSeconds: timeSpent,
+        timeSpentFormatted: formatSecondsToTime(timeSpent),
+        tabSwitches: AppState.student.tabSwitches || 0,
+        submittedAt: new Date().toISOString(),
+        submittedAtFormatted: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date().toLocaleDateString('vi-VN')
+      };
+      
+      recordExamSubmission(AppState.exam.id, submissionEntry);
+      AppState.student.lastSubmissionId = submissionEntry.id;
+      updateLeaderboardBadge();
+
+      // Retrieve student's rank on this exam
+      const currentLb = getExamLeaderboard(AppState.exam.id);
+      const studentRank = currentLb.findIndex(item => item.id === submissionEntry.id) + 1;
+      const totalTakers = currentLb.length;
 
       // Hide active exam, show result screen
       document.getElementById('student-active-exam').classList.add('hidden');
@@ -3273,7 +3440,7 @@ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON với cấu trúc:
       // Populate Result Screen
       document.getElementById('result-exam-title').textContent = AppState.exam.title;
       document.getElementById('result-student-meta').innerHTML = `
-        Thí sinh: <strong>${AppState.student.name}</strong> • SBD: <strong>${AppState.student.sbd}</strong> • Lớp: <strong>${AppState.student.className || 'N/A'}</strong> • Vi phạm chuyển tab: <strong>${AppState.student.tabSwitches} lần</strong>
+        Thí sinh: <strong>${escapeHtml(AppState.student.name)}</strong> • SBD: <strong>${escapeHtml(AppState.student.sbd)}</strong> • Lớp: <strong>${escapeHtml(AppState.student.className || 'N/A')}</strong> • Vi phạm: <strong>${AppState.student.tabSwitches} lần</strong> • Xếp hạng: <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">🏆 Hạng #${studentRank} / ${totalTakers}</span>
       `;
 
       document.getElementById('score-total-number').textContent = scoreData.totalScore.toFixed(2);
@@ -3295,7 +3462,7 @@ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON với cấu trúc:
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      showToast('Đã nộp bài và chấm điểm xong!', 'success');
+      showToast(`Đã nộp bài và chấm điểm xong! Bạn xếp hạng #${studentRank}`, 'success');
     }
 
     /**
@@ -3933,12 +4100,16 @@ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON với cấu trúc:
 
             <!-- Action Buttons -->
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1.5 flex-wrap">
                 <button onclick="loadExamFromLibrary('${ex.id}')" class="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-sm transition-all active:scale-95">
                   Mở Soạn Đề
                 </button>
                 <button onclick="testExamFromLibrary('${ex.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs transition-all active:scale-95">
                   Làm Thử
+                </button>
+                <button onclick="openExamLeaderboardById('${ex.id}', '${escapeHtml(ex.title)}')" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs transition-all active:scale-95 flex items-center gap-1">
+                  <span>🏆</span>
+                  <span>Xếp Hạng (${getExamLeaderboard(ex.id).length})</span>
                 </button>
               </div>
 
@@ -4002,6 +4173,7 @@ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON với cấu trúc:
 
       renderEditorQuestions();
       closeExamLibraryModal();
+      updateLeaderboardBadge();
       showToast(`Đã mở đề thi: "${exam.title}"`, 'success');
     }
 
@@ -4498,6 +4670,384 @@ TRẢ VỀ DUY NHẤT 1 ĐỐI TƯỢNG JSON với cấu trúc:
       const volLabel = document.getElementById('lofi-volume-label');
       if (volSlider) volSlider.value = savedVol;
       if (volLabel) volLabel.textContent = savedVol + '%';
+    }
+
+    /**
+     * =========================================================================
+     * EXAM LEADERBOARD SYSTEM (BẢNG XẾP HẠNG RIÊNG CHO MỖI ĐỀ THI)
+     * =========================================================================
+     */
+    let currentLeaderboardExamId = null;
+    let currentLeaderboardExamTitle = '';
+
+    function formatSecondsToTime(sec) {
+      sec = Math.round(sec);
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      if (m === 0) return s + ' giây';
+      return m + ' phút' + (s > 0 ? ' ' + s + 's' : '');
+    }
+
+    function getExamLeaderboardKey(examId) {
+      return 'edu_lb_' + (examId || 'default');
+    }
+
+    function getExamLeaderboard(examId) {
+      try {
+        const raw = localStorage.getItem(getExamLeaderboardKey(examId));
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.warn("Lỗi đọc bảng xếp hạng:", e);
+        return [];
+      }
+    }
+
+    function saveExamLeaderboard(examId, list) {
+      try {
+        localStorage.setItem(getExamLeaderboardKey(examId), JSON.stringify(list));
+      } catch (e) {
+        console.warn("Lỗi ghi bảng xếp hạng:", e);
+      }
+    }
+
+    function recordExamSubmission(examId, entry) {
+      const list = getExamLeaderboard(examId);
+      list.push(entry);
+      list.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.timeSpentSeconds !== b.timeSpentSeconds) return a.timeSpentSeconds - b.timeSpentSeconds;
+        if (a.tabSwitches !== b.tabSwitches) return a.tabSwitches - b.tabSwitches;
+        return new Date(a.submittedAt) - new Date(b.submittedAt);
+      });
+      saveExamLeaderboard(examId, list);
+      return list;
+    }
+
+    function updateLeaderboardBadge() {
+      const badge = document.getElementById('nav-leaderboard-count');
+      if (badge && AppState.exam) {
+        const list = getExamLeaderboard(AppState.exam.id);
+        badge.textContent = list.length;
+      }
+    }
+
+    function openCurrentExamLeaderboard() {
+      if (!AppState.exam) return;
+      if (!AppState.exam.id) {
+        AppState.exam.id = 'exam_' + (AppState.exam.title ? slugify(AppState.exam.title) : Date.now());
+      }
+      openExamLeaderboardById(AppState.exam.id, AppState.exam.title, AppState.student?.lastSubmissionId);
+    }
+
+    function openExamLeaderboardById(examId, examTitle, highlightSubId = null) {
+      currentLeaderboardExamId = examId;
+      currentLeaderboardExamTitle = examTitle || 'Đề thi THPT 2025';
+
+      const modal = document.getElementById('modal-exam-leaderboard');
+      if (!modal) return;
+
+      document.getElementById('lb-exam-title-display').textContent = currentLeaderboardExamTitle;
+
+      // Show or hide clear all button (only teachers can clear all)
+      const clearBtn = document.getElementById('btn-lb-clear-all');
+      if (clearBtn) {
+        if (AppState.currentUser?.role === 'teacher') {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      }
+
+      // Clear search input
+      const searchInput = document.getElementById('lb-search-input');
+      if (searchInput) searchInput.value = '';
+
+      renderLeaderboardUI(highlightSubId);
+      modal.classList.remove('hidden');
+    }
+
+    function closeLeaderboardModal() {
+      const modal = document.getElementById('modal-exam-leaderboard');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderLeaderboardUI(highlightSubId = null) {
+      const examId = currentLeaderboardExamId;
+      if (!examId) return;
+
+      const rawList = getExamLeaderboard(examId);
+
+      // Update Header Badge & KPI Stats
+      const badgeTotal = document.getElementById('lb-badge-total');
+      const statTotal = document.getElementById('lb-stat-total-submissions');
+      const statTopScore = document.getElementById('lb-stat-top-score');
+      const statTopStudent = document.getElementById('lb-stat-top-student');
+      const statAvgScore = document.getElementById('lb-stat-avg-score');
+      const statFastest = document.getElementById('lb-stat-fastest-time');
+
+      const count = rawList.length;
+      if (badgeTotal) badgeTotal.textContent = count + ' lượt thi';
+      if (statTotal) statTotal.textContent = count;
+
+      if (count === 0) {
+        if (statTopScore) statTopScore.textContent = '--';
+        if (statTopStudent) statTopStudent.textContent = 'Chưa có thí sinh';
+        if (statAvgScore) statAvgScore.textContent = '--';
+        if (statFastest) statFastest.textContent = '--';
+      } else {
+        // Top student is rank 1
+        const top = rawList[0];
+        if (statTopScore) statTopScore.textContent = top.score.toFixed(2) + ' đ';
+        if (statTopStudent) statTopStudent.textContent = top.studentName + (top.studentSbd ? ' (' + top.studentSbd + ')' : '');
+
+        // Average score
+        const sum = rawList.reduce((acc, cur) => acc + (cur.score || 0), 0);
+        const avg = sum / count;
+        if (statAvgScore) statAvgScore.textContent = avg.toFixed(2) + ' đ';
+
+        // Fastest time
+        const minSec = Math.min(...rawList.map(item => item.timeSpentSeconds || 999999));
+        if (statFastest) statFastest.textContent = formatSecondsToTime(minSec);
+      }
+
+      // Filter based on search input
+      const searchInput = document.getElementById('lb-search-input');
+      const keyword = (searchInput?.value || '').toLowerCase().trim();
+
+      const filteredList = !keyword ? rawList : rawList.filter(item => {
+        const nameMatch = (item.studentName || '').toLowerCase().includes(keyword);
+        const sbdMatch = (item.studentSbd || '').toLowerCase().includes(keyword);
+        const classMatch = (item.studentClass || '').toLowerCase().includes(keyword);
+        const userMatch = (item.username || '').toLowerCase().includes(keyword);
+        return nameMatch || sbdMatch || classMatch || userMatch;
+      });
+
+      const container = document.getElementById('lb-table-container');
+      if (!container) return;
+
+      if (filteredList.length === 0) {
+        if (count === 0) {
+          container.innerHTML = `
+            <div class="text-center py-16 text-slate-400">
+              <div class="w-16 h-16 rounded-3xl bg-amber-50 text-amber-500 mx-auto flex items-center justify-center text-3xl shadow-sm mb-3">
+                🏆
+              </div>
+              <h4 class="font-extrabold text-slate-800 text-base">Chưa có lượt nộp bài nào cho đề thi này</h4>
+              <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                Hãy là người đầu tiên hoàn thành bài thi để ghi danh trên bảng xếp hạng!
+              </p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="text-center py-12 text-slate-400">
+              <p class="font-bold text-slate-700 text-sm">Không tìm thấy thí sinh nào phù hợp với từ khóa "${escapeHtml(keyword)}"</p>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      const isTeacher = AppState.currentUser?.role === 'teacher';
+
+      let tableHtml = `
+        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                <th class="py-3 px-3 sm:px-4 text-center w-16">Hạng</th>
+                <th class="py-3 px-3 sm:px-4">Thí Sinh</th>
+                <th class="py-3 px-3 sm:px-4 text-center">Tổng Điểm</th>
+                <th class="py-3 px-3 sm:px-4 hidden md:table-cell">Chi Tiết Điểm</th>
+                <th class="py-3 px-3 sm:px-4 text-center">Thời Gian Làm</th>
+                <th class="py-3 px-3 sm:px-4 text-center hidden sm:table-cell">Chuyển Tab</th>
+                <th class="py-3 px-3 sm:px-4 text-right hidden lg:table-cell">Thời Gian Nộp</th>
+                ${isTeacher ? '<th class="py-3 px-3 sm:px-4 text-center w-12">Xóa</th>' : ''}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+      `;
+
+      filteredList.forEach((entry) => {
+        // Determine overall original rank in rawList
+        const originalRank = rawList.findIndex(x => x.id === entry.id) + 1;
+        const isHighlighted = (highlightSubId && entry.id === highlightSubId) || 
+          (AppState.currentUser && entry.username && entry.username.toLowerCase() === AppState.currentUser.username.toLowerCase());
+
+        // Rank Medal / Badge
+        let rankBadge = '';
+        if (originalRank === 1) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-8 h-8 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-amber-950 font-black text-sm shadow-md shadow-amber-400/40">🥇 1</span>`;
+        } else if (originalRank === 2) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-8 h-8 rounded-2xl bg-gradient-to-tr from-slate-200 to-slate-100 text-slate-800 font-black text-sm shadow-md">🥈 2</span>`;
+        } else if (originalRank === 3) {
+          rankBadge = `<span class="inline-flex items-center justify-center w-8 h-8 rounded-2xl bg-gradient-to-tr from-amber-700 to-amber-600 text-white font-black text-sm shadow-md">🥉 3</span>`;
+        } else {
+          rankBadge = `<span class="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs border border-slate-200">#${originalRank}</span>`;
+        }
+
+        // Score Color Badge
+        let scoreColor = 'bg-rose-50 text-rose-700 border-rose-200';
+        if (entry.score >= 8.0) scoreColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        else if (entry.score >= 6.5) scoreColor = 'bg-blue-50 text-blue-700 border-blue-200';
+        else if (entry.score >= 5.0) scoreColor = 'bg-amber-50 text-amber-700 border-amber-200';
+
+        tableHtml += `
+          <tr class="hover:bg-slate-50/70 transition-colors ${isHighlighted ? 'bg-amber-50/40 font-medium ring-1 ring-amber-300/60' : ''}">
+            
+            <!-- Rank -->
+            <td class="py-3 px-3 sm:px-4 text-center">
+              ${rankBadge}
+            </td>
+
+            <!-- Student Info -->
+            <td class="py-3 px-3 sm:px-4">
+              <div class="flex items-center gap-2">
+                <div>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-extrabold text-slate-900 text-xs sm:text-sm">${escapeHtml(entry.studentName)}</span>
+                    ${isHighlighted ? '<span class="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500 text-white shadow-xs">Bạn</span>' : ''}
+                  </div>
+                  <div class="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                    <span>SBD: <strong class="text-slate-700 font-mono">${escapeHtml(entry.studentSbd || 'N/A')}</strong></span>
+                    ${entry.studentClass ? `<span>• Lớp: ${escapeHtml(entry.studentClass)}</span>` : ''}
+                    ${entry.username ? `<span class="text-[10px] text-slate-400">(@${escapeHtml(entry.username)})</span>` : ''}
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Total Score -->
+            <td class="py-3 px-3 sm:px-4 text-center">
+              <span class="inline-block px-3 py-1 rounded-xl font-black text-sm border shadow-xs ${scoreColor}">
+                ${entry.score.toFixed(2)}
+              </span>
+              <span class="block text-[10px] text-slate-400 mt-0.5">/ 10.0</span>
+            </td>
+
+            <!-- Details P1, P2, P3 -->
+            <td class="py-3 px-3 sm:px-4 hidden md:table-cell text-slate-600 text-[11px]">
+              <div class="space-y-0.5">
+                <div>P1: <strong>${entry.part1Score.toFixed(2)}đ</strong> <span class="text-slate-400">(${entry.part1Correct || ''})</span></div>
+                <div>P2: <strong>${entry.part2Score.toFixed(2)}đ</strong> <span class="text-slate-400">(${entry.part2Correct || ''})</span></div>
+                <div>P3: <strong>${entry.part3Score.toFixed(2)}đ</strong> <span class="text-slate-400">(${entry.part3Correct || ''})</span></div>
+              </div>
+            </td>
+
+            <!-- Time spent -->
+            <td class="py-3 px-3 sm:px-4 text-center font-medium text-slate-700 text-xs">
+              <span class="inline-flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                ${entry.timeSpentFormatted || (entry.timeSpentSeconds + 's')}
+              </span>
+            </td>
+
+            <!-- Tab switches -->
+            <td class="py-3 px-3 sm:px-4 text-center hidden sm:table-cell">
+              ${entry.tabSwitches > 0 
+                ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">⚠️ ${entry.tabSwitches} lần</span>`
+                : `<span class="text-slate-400 text-xs">0 lần</span>`}
+            </td>
+
+            <!-- Submitted At -->
+            <td class="py-3 px-3 sm:px-4 text-right hidden lg:table-cell text-slate-400 text-[11px]">
+              ${entry.submittedAtFormatted || new Date(entry.submittedAt).toLocaleDateString('vi-VN')}
+            </td>
+
+            <!-- Teacher Delete Action -->
+            ${isTeacher ? `
+              <td class="py-3 px-3 sm:px-4 text-center">
+                <button onclick="deleteLeaderboardEntry('${examId}', '${entry.id}')" title="Xóa kết quả này" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </td>
+            ` : ''}
+
+          </tr>
+        `;
+      });
+
+      tableHtml += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = tableHtml;
+    }
+
+    function filterLeaderboardUI() {
+      renderLeaderboardUI();
+    }
+
+    function exportLeaderboardToCSV() {
+      const examId = currentLeaderboardExamId;
+      if (!examId) return;
+
+      const list = getExamLeaderboard(examId);
+      if (!list || list.length === 0) {
+        showToast('Chưa có dữ liệu thí sinh để xuất!', 'warning');
+        return;
+      }
+
+      let csvContent = '\uFEFF'; // UTF-8 BOM for Microsoft Excel
+      csvContent += 'Hạng,Họ và Tên,Số Báo Danh,Lớp,Tài Khoản,Tổng Điểm,Phần I,Phần II,Phần III,Thời Gian Làm Bài (giây),Thời Gian Làm Bài,Vi Phạm Chuyển Tab,Thời Gian Nộp\n';
+
+      list.forEach((item, idx) => {
+        const row = [
+          idx + 1,
+          `"${(item.studentName || '').replace(/"/g, '""')}"`,
+          `"${(item.studentSbd || '').replace(/"/g, '""')}"`,
+          `"${(item.studentClass || '').replace(/"/g, '""')}"`,
+          `"${(item.username || '').replace(/"/g, '""')}"`,
+          item.score,
+          item.part1Score,
+          item.part2Score,
+          item.part3Score,
+          item.timeSpentSeconds,
+          `"${item.timeSpentFormatted || ''}"`,
+          item.tabSwitches || 0,
+          `"${item.submittedAtFormatted || item.submittedAt || ''}"`
+        ];
+        csvContent += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const filename = `Bang_Xep_Hang_${slugify(currentLeaderboardExamTitle || 'de_thi')}.csv`;
+      downloadBlob(blob, filename);
+      showToast('Đã tải xuống file Excel/CSV Bảng xếp hạng!', 'success');
+    }
+
+    function deleteLeaderboardEntry(examId, subId) {
+      if (AppState.currentUser?.role !== 'teacher') {
+        showToast('Chỉ giáo viên mới có quyền xóa kết quả thi!', 'error');
+        return;
+      }
+      if (!confirm('Bạn có chắc muốn xóa lượt thi của thí sinh này khỏi bảng xếp hạng?')) return;
+      let list = getExamLeaderboard(examId);
+      list = list.filter(item => item.id !== subId);
+      saveExamLeaderboard(examId, list);
+      renderLeaderboardUI();
+      updateLeaderboardBadge();
+      updateLibraryCounts();
+      showToast('Đã xóa lượt thi khỏi bảng xếp hạng!', 'info');
+    }
+
+    function clearCurrentExamLeaderboard() {
+      if (AppState.currentUser?.role !== 'teacher') {
+        showToast('Chỉ giáo viên mới có quyền xóa bảng xếp hạng!', 'error');
+        return;
+      }
+      if (!confirm('Bạn có chắc muốn xóa TOÀN BỘ lịch sử và bảng xếp hạng của đề thi này không?')) return;
+      saveExamLeaderboard(currentLeaderboardExamId, []);
+      renderLeaderboardUI();
+      updateLeaderboardBadge();
+      updateLibraryCounts();
+      showToast('Đã xóa toàn bộ bảng xếp hạng của đề thi này!', 'info');
     }
   </script>
 </body>
